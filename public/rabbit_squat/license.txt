@@ -1,0 +1,11 @@
+Model Information:
+* title:	Rabbit Squat
+* source:	https://sketchfab.com/3d-models/rabbit-squat-08d4bf632019457bbfb87c3a9b3b9803
+* author:	hanjum (https://sketchfab.com/hanjum)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Rabbit Squat" (https://sketchfab.com/3d-models/rabbit-squat-08d4bf632019457bbfb87c3a9b3b9803) by hanjum (https://sketchfab.com/hanjum) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
