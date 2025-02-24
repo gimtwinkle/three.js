@@ -46,8 +46,6 @@ const texture = bgLoader.load(skyboxTextures);
 // 스카이박스를 장면에 적용
 scene.background = texture;
 
-
-
 // 조명
 let sunLight = new THREE.DirectionalLight(0xFFFFFF, 1.5);
 sunLight.position.set(5, 10, -5);
@@ -59,21 +57,6 @@ scene.add(sunLight, ambientLight, hemiLight);
 renderer.shadowMap.enabled = true;
 renderer.castShadow = true;
 renderer.receiveShadow = true;
-
-let loader = new GLTFLoader();
-loader.load('/rabbit_squat/scene.gltf', function (gltf) {
-    model = gltf.scene;
-    scene.add(model);
-
-    if (gltf.animations.length > 0) {
-        mixer = new THREE.AnimationMixer(model);
-
-        // 첫 번째 애니메이션: 회전
-        let rotateAction = mixer.clipAction(gltf.animations[0]);
-        rotateAction.setLoop(THREE.LoopRepeat, Infinity);
-        rotateAction.play();
-    }
-});
 
 // 마우스 이벤트 처리
 document.addEventListener("mousedown", onMouseDown);
@@ -96,8 +79,8 @@ function onMouseMove(event) {
 	let deltaY = event.clientY - previousMousePosition.y;
 
 	// 모델 회전
-	model.rotation.y += deltaX * 0.001;
-	model.rotation.x += deltaY * 0.001;
+	model.rotation.y += deltaX * 0.005;
+	model.rotation.x += deltaY * 0.005;
 
 	previousMousePosition = { x: event.clientX, y: event.clientY };
 }
@@ -118,8 +101,8 @@ function onTouchMove(event) {
 	let deltaX = event.touches[0].clientX - previousMousePosition.x;
 	let deltaY = event.touches[0].clientY - previousMousePosition.y;
 
-	model.rotation.y += deltaX * 0.001;
-	model.rotation.x += deltaY * 0.001;
+	model.rotation.y += deltaX * 0.005;
+	model.rotation.x += deltaY * 0.005;
 
 	previousMousePosition = { x: event.touches[0].clientX, y: event.touches[0].clientY };
 }
@@ -130,17 +113,40 @@ function onTouchEnd() {
 
 let clock = new THREE.Clock();
 
-// 애니메이션 루프에서 업데이트
+let loader = new GLTFLoader();
+loader.load('/rabbit_squat/scene.gltf', function (gltf) {
+    model = gltf.scene;
+
+    // 모델의 위치를 (0, 0, 0)으로 설정
+    model.position.set(0, 0, 0);
+
+    // 모델의 크기를 적절히 조정 (필요 시)
+    model.scale.set(1, 1, 1); // 모델 크기 조정
+
+    scene.add(model);
+
+    // 애니메이션이 있는지 확인하고 애니메이션 믹서 생성
+    if (gltf.animations.length > 0) {
+        mixer = new THREE.AnimationMixer(model);
+
+        // 내장된 애니메이션을 모두 재생하도록 설정 (기본적으로 첫 번째 애니메이션부터 실행)
+        gltf.animations.forEach((clip) => {
+            mixer.clipAction(clip).play().setLoop(THREE.LoopRepeat, Infinity);
+        });
+    }
+});
+
+// 자동 회전과 애니메이션 업데이트
 function animate() {
     requestAnimationFrame(animate);
     let delta = clock.getDelta(1); // 프레임 간 시간 계산
-    if (mixer) mixer.update(delta); // 애니메이션 업데이트
 
-    // 마우스 이벤트가 작동 중이지 않다면 자동 회전
-    if (!isDragging && model) {
-        model.rotation.y += autoRotateSpeed;  // Y축 회전
+    // 모델의 자동 회전 (y축 회전)
+    if (model) {
+        model.rotation.y += autoRotateSpeed;
     }
 
+    if (mixer) mixer.update(delta); // 애니메이션 업데이트
     renderer.render(scene, camera);
 }
 
